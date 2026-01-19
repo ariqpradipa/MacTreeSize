@@ -33,7 +33,7 @@ struct VolumeInfo: Identifiable, Hashable {
     
     var icon: String {
         switch volumeType {
-        case .internal:
+        case .internalDrive:
             return "internaldrive.fill"
         case .external:
             return "externaldrive.fill"
@@ -46,7 +46,7 @@ struct VolumeInfo: Identifiable, Hashable {
 }
 
 enum VolumeType {
-    case internal
+    case internalDrive
     case external
     case network
     case disk

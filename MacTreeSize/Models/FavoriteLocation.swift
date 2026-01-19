@@ -1,4 +1,5 @@
 import Foundation
+import Combine
 
 struct FavoriteLocation: Identifiable, Codable, Hashable {
     let id: UUID
@@ -66,27 +67,10 @@ class FavoritesManager: ObservableObject {
         // Only add if favorites is empty (first launch)
         guard favorites.isEmpty else { return }
         
-        let fileManager = FileManager.default
-        let homeURL = fileManager.homeDirectoryForCurrentUser
-        
-        let systemLocations: [(String, String)] = [
-            ("Desktop", "Desktop"),
-            ("Documents", "Documents"),
-            ("Downloads", "Downloads"),
-            ("Applications", "/Applications"),
-            ("Library", "Library"),
-            ("Movies", "Movies"),
-            ("Music", "Music"),
-            ("Pictures", "Pictures")
-        ]
-        
-        for (name, path) in systemLocations {
-            let url = path.hasPrefix("/") ? URL(fileURLWithPath: path) : homeURL.appendingPathComponent(path)
-            if fileManager.fileExists(atPath: url.path) {
-                let favorite = FavoriteLocation(url: url, name: name, type: .system)
-                favorites.append(favorite)
-            }
-        }
+        // Add root directory as the only default favorite
+        let rootURL = URL(fileURLWithPath: "/")
+        let favorite = FavoriteLocation(url: rootURL, name: "Root", type: .system)
+        favorites.append(favorite)
         
         saveFavorites()
     }

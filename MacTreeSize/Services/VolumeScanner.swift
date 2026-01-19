@@ -1,4 +1,5 @@
 import Foundation
+import Combine
 
 @MainActor
 class VolumeScanner: ObservableObject {
@@ -50,7 +51,7 @@ class VolumeScanner: ObservableObject {
             } else if !isInternal || isEjectable {
                 volumeType = .external
             } else {
-                volumeType = .internal
+                volumeType = .internalDrive
             }
             
             let volumeInfo = VolumeInfo(
@@ -77,7 +78,7 @@ class VolumeScanner: ObservableObject {
     
     private func volumeTypePriority(_ type: VolumeType) -> Int {
         switch type {
-        case .internal: return 0
+        case .internalDrive: return 0
         case .external: return 1
         case .disk: return 2
         case .network: return 3

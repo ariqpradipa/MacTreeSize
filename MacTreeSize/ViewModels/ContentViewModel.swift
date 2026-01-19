@@ -2,6 +2,7 @@ import Foundation
 import SwiftUI
 import Combine
 import AppKit
+import UniformTypeIdentifiers
 
 @MainActor
 class ContentViewModel: ObservableObject {

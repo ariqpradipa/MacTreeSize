@@ -1,4 +1,5 @@
 import Foundation
+import Combine
 
 enum FileCategory: String, CaseIterable, Identifiable {
     case videos = "Videos"
