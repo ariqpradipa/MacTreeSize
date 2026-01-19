@@ -74,6 +74,10 @@ class VolumeScanner: ObservableObject {
             }
             return vol1.name.localizedStandardCompare(vol2.name) == .orderedAscending
         }
+        
+        // Remove duplicates if any (based on URL)
+        // Although mounting logic should prevent it, sometimes multiple mounts appear
+        // self.volumes = Array(Set(self.volumes)) // VolumeInfo needs to be Hashable
     }
     
     private func volumeTypePriority(_ type: VolumeType) -> Int {

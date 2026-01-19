@@ -80,6 +80,7 @@ struct DistributionView: View {
                                             .lineLimit(1)
                                             .truncationMode(.middle)
                                             .help(fullName(for: name))
+                                            .frame(width: 80, alignment: .trailing) // Fixed width for alignment
                                     }
                                 }
                             }

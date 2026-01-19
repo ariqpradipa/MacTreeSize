@@ -46,9 +46,28 @@ class ContentViewModel: ObservableObject {
         performScan(url: volume.url)
     }
     
-    func scanLocation(_ url: URL) {
-        selectedFolder = url
-        performScan(url: url)
+    func scanLocation(_ url: URL, bookmarkData: Data? = nil) {
+        // Resolve bookmark if available to ensure access to the security-scoped resource
+        var targetURL = url
+        var isStale = false
+        
+        if let data = bookmarkData {
+            do {
+                // Resolving the bookmark allows the system to refresh the security scope access
+                targetURL = try URL(resolvingBookmarkData: data, options: .withSecurityScope, relativeTo: nil, bookmarkDataIsStale: &isStale)
+                
+                if isStale {
+                   print("Bookmark is stale for \(targetURL.path)")
+                   // In a real app, we might want to regenerate and save the bookmark here
+                }
+            } catch {
+                print("Failed to resolve bookmark: \(error)")
+                // Fallback to original URL if resolution fails, though it might lack permissions
+            }
+        }
+        
+        selectedFolder = targetURL
+        performScan(url: targetURL)
     }
     
     func scanWithPreset(_ preset: ScanPreset) {
@@ -87,7 +106,9 @@ class ContentViewModel: ObservableObject {
     }
     
     func stopScan() {
-        scanner.stop()
+        Task {
+            await scanner.stop()
+        }
         isScanning = false
     }
     

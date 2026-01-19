@@ -70,7 +70,12 @@ struct SidebarView: View {
         Section("Favorites") {
             ForEach(favoritesManager.favorites) { favorite in
                 FavoriteRowView(favorite: favorite) {
-                    viewModel.scanLocation(favorite.url)
+                    if favorite.type == .custom || favorite.type == .recent {
+                         // Use background thread/Task to handle potential heavy lifting or delays? 
+                         // scanLocation is synchronous but spawns a Task. 
+                         // Just ensuring UI feedback is key.
+                    }
+                    viewModel.scanLocation(favorite.url, bookmarkData: favorite.bookmarkData)
                 }
                 .contextMenu {
                     if favorite.type == .custom {
@@ -101,7 +106,7 @@ struct SidebarView: View {
             } else {
                 ForEach(favoritesManager.recentScans.prefix(5)) { recent in
                     FavoriteRowView(favorite: recent) {
-                        viewModel.scanLocation(recent.url)
+                        viewModel.scanLocation(recent.url, bookmarkData: recent.bookmarkData)
                     }
                 }
                 

@@ -102,7 +102,7 @@ class ScanStatistics: ObservableObject {
         // Convert to array and calculate percentages
         var categoryArray = Array(stats.values)
         for i in 0..<categoryArray.count {
-            let percentage = totalSize > 0 ? Double(categoryArray[i].totalSize) / Double(totalSize) : 0
+            _ = totalSize > 0 ? Double(categoryArray[i].totalSize) / Double(totalSize) : 0
             categoryArray[i] = FileCategoryStats(
                 category: categoryArray[i].category,
                 totalSize: categoryArray[i].totalSize,

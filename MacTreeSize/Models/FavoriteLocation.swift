@@ -7,13 +7,15 @@ struct FavoriteLocation: Identifiable, Codable, Hashable {
     let name: String
     let type: LocationType
     let dateAdded: Date
+    var bookmarkData: Data? // Added for Security Scoped Bookmarks
     
-    init(id: UUID = UUID(), url: URL, name: String, type: LocationType, dateAdded: Date = Date()) {
+    init(id: UUID = UUID(), url: URL, name: String, type: LocationType, dateAdded: Date = Date(), bookmarkData: Data? = nil) {
         self.id = id
         self.url = url
         self.name = name
         self.type = type
         self.dateAdded = dateAdded
+        self.bookmarkData = bookmarkData
     }
     
     var icon: String {
@@ -76,7 +78,10 @@ class FavoritesManager: ObservableObject {
     }
     
     func addCustomFavorite(url: URL, name: String) {
-        let favorite = FavoriteLocation(url: url, name: name, type: .custom)
+        // Create security scoped bookmark
+        let bookmarkData = try? url.bookmarkData(options: .withSecurityScope, includingResourceValuesForKeys: nil, relativeTo: nil)
+        
+        let favorite = FavoriteLocation(url: url, name: name, type: .custom, bookmarkData: bookmarkData)
         favorites.append(favorite)
         saveFavorites()
     }
@@ -90,8 +95,11 @@ class FavoritesManager: ObservableObject {
         // Remove if already exists
         recentScans.removeAll { $0.url == url }
         
+        // Create security scoped bookmark for recent scan as well
+        let bookmarkData = try? url.bookmarkData(options: .withSecurityScope, includingResourceValuesForKeys: nil, relativeTo: nil)
+        
         // Add at the beginning
-        let recent = FavoriteLocation(url: url, name: url.lastPathComponent, type: .recent)
+        let recent = FavoriteLocation(url: url, name: url.lastPathComponent, type: .recent, bookmarkData: bookmarkData)
         recentScans.insert(recent, at: 0)
         
         // Keep only max recent scans

@@ -1,5 +1,12 @@
 import Foundation
 
+enum VolumeType: String, Codable, Equatable, Hashable {
+    case internalDrive
+    case external
+    case network
+    case disk
+}
+
 struct VolumeInfo: Identifiable, Hashable {
     let id: UUID = UUID()
     let url: URL
@@ -43,11 +50,4 @@ struct VolumeInfo: Identifiable, Hashable {
             return "opticaldiscdrive.fill"
         }
     }
-}
-
-enum VolumeType {
-    case internalDrive
-    case external
-    case network
-    case disk
 }

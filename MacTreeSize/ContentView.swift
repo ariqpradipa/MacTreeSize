@@ -61,7 +61,26 @@ struct ContentView: View {
     var detailView: some View {
         VSplitView {
             VStack(spacing: 0) {
-                if let root = viewModel.rootNode {
+                if viewModel.isScanning && viewModel.rootNode == nil {
+                    // Scanning and no root yet (initial phase)
+                    VStack(spacing: 16) {
+                        ProgressView()
+                            .controlSize(.large)
+                        Text("Scanning...")
+                            .font(.headline)
+                            .foregroundColor(.secondary)
+                        if let path = viewModel.selectedFolder?.path {
+                            Text(path)
+                                .font(.caption)
+                                .foregroundColor(.secondary)
+                                .lineLimit(1)
+                                .truncationMode(.middle)
+                                .padding(.horizontal)
+                        }
+                    }
+                    .frame(maxWidth: .infinity, maxHeight: .infinity)
+                    .background(Color(NSColor.controlBackgroundColor))
+                } else if let root = viewModel.rootNode {
                     fileTable(root: root)
                 } else {
                     ContentUnavailableView("No Scan Data", systemImage: "externaldrive", description: Text("Select a folder to start scanning."))
@@ -73,6 +92,16 @@ struct ContentView: View {
                 DistributionView(rootNode: root)
                     .frame(minHeight: 200)
                     .background(Color(NSColor.controlBackgroundColor))
+            } else if viewModel.isScanning {
+                // Placeholder for distribution view while scanning
+                Rectangle()
+                    .fill(Color(NSColor.controlBackgroundColor))
+                    .frame(minHeight: 200)
+                    .overlay {
+                        Text("Waiting for scan data...")
+                            .foregroundStyle(.secondary)
+                            .font(.caption)
+                    }
             }
         }
     }
