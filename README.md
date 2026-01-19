@@ -2,6 +2,8 @@
 
 MacTreeSize is a powerful, native macOS application designed to help you visualize and manage your disk space usage. Inspired by classic disk usage tools, it provides a clean, modern SwiftUI interface to quickly identify large files and folders that are consuming your storage.
 
+![MacTreeSize App Screenshot](assets/mactreesize-app.png)
+
 ## Features
 
 - **🚀 Fast & Efficient Scanning**: Uses Swift's structured concurrency and actors for high-performance, non-blocking file system scanning.
