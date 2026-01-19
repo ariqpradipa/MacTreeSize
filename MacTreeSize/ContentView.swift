@@ -9,6 +9,7 @@ import SwiftUI
 
 struct ContentView: View {
     @StateObject private var viewModel = ContentViewModel()
+    @StateObject private var favoritesManager = FavoritesManager()
     @State private var selection: Set<FileNode.ID> = []
     @State private var sortOrder: [KeyPathComparator<FileNode>] = [
         .init(\.size, order: .reverse)
@@ -16,15 +17,11 @@ struct ContentView: View {
     
     var body: some View {
         NavigationSplitView {
-            // Sidebar - Could be list of volumes or "Favorites"
-            List {
-                Section("Locations") {
-                    Button(action: { viewModel.selectFolder() }) {
-                        Label("Scan Folder...", systemImage: "folder.badge.plus")
-                    }
-                }
-            }
-            .navigationSplitViewColumnWidth(min: 200, ideal: 250)
+            SidebarView(
+                viewModel: viewModel,
+                statistics: viewModel.statistics
+            )
+            .environmentObject(favoritesManager)
         } detail: {
             detailView
         }
@@ -42,6 +39,21 @@ struct ContentView: View {
                 }
                 .disabled(!viewModel.isScanning)
             }
+            
+            ToolbarItem(placement: .status) {
+                if viewModel.isScanning {
+                    HStack(spacing: 8) {
+                        ProgressView()
+                            .controlSize(.small)
+                        Text("Scanning...")
+                            .font(.caption)
+                            .foregroundColor(.secondary)
+                    }
+                }
+            }
+        }
+        .onAppear {
+            viewModel.setFavoritesManager(favoritesManager)
         }
     }
 
